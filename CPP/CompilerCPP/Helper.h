@@ -19,7 +19,7 @@ enum class TokenType
 class NotImplementedException : public std::logic_error
 {
 public:
-    virtual char const * what() const { return "Function not yet implemented."; }
+  virtual char const *what() const { return "Function not yet implemented."; }
 } NotImplementedEx;
 
 class Helper
@@ -52,9 +52,9 @@ Helper::Helper(std::string input)
   {
     std::string lineParse;
     int count = 0;
-    while (std::getline (inputFile,lineParse))
+    while (std::getline(inputFile, lineParse))
     {
-      PreParse.assign(count,lineParse);
+      PreParse.assign(count, lineParse);
       ++count;
     }
     inputFile.close;
@@ -63,7 +63,6 @@ Helper::Helper(std::string input)
   {
     throw NotImplementedEx;
   }
-  
 }
 
 bool Helper::IsKeyword(std::string input)
@@ -105,4 +104,5 @@ bool Helper::IsOperator(std::string input)
     return false;
   }
 }
+
 } // namespace Helper
