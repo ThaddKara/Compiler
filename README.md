@@ -6,9 +6,8 @@
 
 ## TODO
     1. Lexical Analyzer
-        - should read from text file and differentiate from different types of tokens
-        - output to text file?
-        - waiting on official list of language keywords
+        - Create state mechanism
+        - State transfer definitions
     2.
     3.
     4.
@@ -16,6 +15,17 @@
     6.
     7.
 
+## Done
+    1. Lexical Analyzer
+        - Basic functions for helper.h including file reading
+        - Use map to store output before written to file
+    2.
+    3.
+    4.
+    5.
+    6.
+    7.
+    
 ## File Layout
     - CPP
         - Compiler written in C++
