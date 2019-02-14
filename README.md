@@ -25,9 +25,15 @@
     5.
     6.
     7.
-    
+
 ## File Layout
-    - CPP
-        - Compiler written in C++
+    - CPP (Compiler written in C++)
+        - CompilerCPP
+            - Helper.h
+                - basic functions to help during state management
+            - StateMechanism.h
+                - handle state and state transition definitions
+            - CompilerCPP.cpp
+                - implement Helper.h and StateMechanism to input and write to file
     - CS 
         - Compiler written in C# after CPP
