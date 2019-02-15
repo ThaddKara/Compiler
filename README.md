@@ -8,6 +8,8 @@
     1. Lexical Analyzer
         - Create state mechanism
         - State transfer definitions
+        - Implement Helper -> StateMechanism?
+        - 
     2.
     3.
     4.

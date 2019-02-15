@@ -3,6 +3,11 @@
 
 namespace StateMechanism
 {
+enum class PossibleStates
+{
+    
+};
+
 class StateMechanism
 {
     
