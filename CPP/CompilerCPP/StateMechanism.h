@@ -54,7 +54,7 @@ public:
 
 Helper::Helper()
 {
-  std::ifstream inputFile("input.txt");
+  std::ifstream inputFile("Input.txt");
   if (inputFile.is_open)
   {
     std::string lineParse;
