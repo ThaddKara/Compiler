@@ -14,6 +14,13 @@ enum TokenType
   Operator
 };
 
+enum States
+{
+  Process,
+  FetchOperation,
+  Stop
+};
+
 class NotImplementedException : public std::logic_error
 {
 public:
@@ -22,7 +29,9 @@ public:
 
 class StateMechanism
 {
-  
+  StateMechanism::StateMechanism();
+  StateMechanism::StateMechanism(Helper);
+  States StateMechanism::StateIs(TokenType);
 };
 
 class Helper
@@ -45,6 +54,22 @@ public:
 
 Helper::Helper()
 {
+  std::ifstream inputFile("input.txt");
+  if (inputFile.is_open)
+  {
+    std::string lineParse;
+    int count = 0;
+    while (std::getline(inputFile, lineParse))
+    {
+      PreParse.assign(count, lineParse);
+      ++count;
+    }
+    inputFile.close;
+  }
+  else
+  {
+    throw NotImplementedEx;
+  }
 }
 
 //
@@ -72,7 +97,8 @@ Helper::Helper(std::string input)
 
 bool Helper::IsKeyword(std::string input)
 {
-  if (input == "int" || input == "if" || input == "else")
+  if (input == "int" || input == "if" 
+  || input == "else")
   {
     return true;
   }
@@ -88,7 +114,9 @@ bool Helper::IsIdentifier(std::string input)
 
 bool Helper::IsSeparator(std::string input)
 {
-  if (input == "," || input == "(" || input == ")" || input == ";" || input == "{" || input == "}")
+  if (input == "," || input == "(" 
+  || input == ")" || input == ";" 
+  || input == "{" || input == "}")
   {
     return true;
   }
@@ -100,7 +128,9 @@ bool Helper::IsSeparator(std::string input)
 
 bool Helper::IsSeparator(char input)
 {
-  if (input == ',' || input == '(' || input == ')' || input == ';' || input == '{' || input == '}')
+  if (input == ',' || input == '(' 
+  || input == ')' || input == ';' 
+  || input == '{' || input == '}')
   {
     return true;
   }
@@ -147,7 +177,7 @@ std::string Helper::GetNext()
 
 // Untested
 //
-// Return list<string> with next multiple items in PreParse
+// Return list<string> with next multiple items in PreParse List
 //
 std::list<std::string> Helper::GetNext(int iterator)
 {
