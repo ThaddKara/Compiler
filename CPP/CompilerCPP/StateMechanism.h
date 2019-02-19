@@ -43,8 +43,8 @@ public:
   bool Helper::IsIdentifier(std::string);
   bool Helper::IsSeparator(std::string);
   bool Helper::IsSeparator(char);
-  bool Helper::IsOperator(std::string);
-  bool Helper::IsWhitespaceOrSeparator(char);
+  bool Helper::IsOperator(char);
+  bool Helper::IsWhitespaceOrSeparatorOrOperator(char);
   std::string Helper::GetNext();
   std::list<std::string> Helper::GetNext(int);
   std::list<std::string> PreParse;
@@ -140,9 +140,9 @@ bool Helper::IsSeparator(char input)
   }
 }
 
-bool Helper::IsOperator(std::string input)
+bool Helper::IsOperator(char input)
 {
-  if (input == ">" || input == "=")
+  if (input == '>' || input == '=')
   {
     return true;
   }
@@ -152,9 +152,10 @@ bool Helper::IsOperator(std::string input)
   }
 }
 
-bool Helper::IsWhitespaceOrSeparator(char input)
+bool Helper::IsWhitespaceOrSeparatorOrOperator(char input)
 {
-  if (input == ' ' || IsSeparator(input))
+  if (input == ' ' || IsSeparator(input)
+  || IsOperator(input))
   {
     return true;
   }
