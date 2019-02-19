@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <list>
+#include <pch.cpp>
 
 namespace StateMechanism
 {
@@ -27,26 +28,19 @@ public:
   virtual char const *what() const { return "Function not yet implemented."; }
 } NotImplementedEx;
 
-class StateMechanism
-{
-  StateMechanism::StateMechanism();
-  StateMechanism::StateMechanism(Helper);
-  States StateMechanism::StateIs(TokenType);
-};
-
 class Helper
 {
 public:
-  Helper::Helper();
-  Helper::Helper(std::string);
-  bool Helper::IsKeyword(std::string);
-  bool Helper::IsIdentifier(std::string);
-  bool Helper::IsSeparator(std::string);
-  bool Helper::IsSeparator(char);
-  bool Helper::IsOperator(char);
-  bool Helper::IsWhitespaceOrSeparatorOrOperator(char);
-  std::string Helper::GetNext();
-  std::list<std::string> Helper::GetNext(int);
+  Helper();
+  Helper(std::string);
+  bool IsKeyword(std::string);
+  bool IsIdentifier(std::string);
+  bool IsSeparator(std::string);
+  bool IsSeparator(char);
+  bool IsOperator(char);
+  bool IsWhitespaceOrSeparatorOrOperator(char);
+  std::string GetNext();
+  std::list<std::string> GetNext(int);
   std::list<std::string> PreParse;
   std::string Token;
   std::map<TokenType, std::string> PostParse;
@@ -190,4 +184,26 @@ std::list<std::string> Helper::GetNext(int iterator)
   }
 }
 
-} // namespace Helper
+class StateMechanism
+{
+	StateMechanism();
+	StateMechanism(Helper() helper);
+	States StateIs(TokenType);
+	void StateIsKeyword();
+	void StateIsIdentifier();
+	void StateIsSeparator();
+	void StateIsOperator();
+	void StateIsNumber();
+	void StateIsComments();
+};
+
+StateMechanism::StateMechanism()
+{
+	throw NotImplementedEx;
+}
+
+StateMechanism(Helper() helper)
+{
+
+}
+} // namespace StateMechanism
