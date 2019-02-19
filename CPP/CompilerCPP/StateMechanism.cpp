@@ -38,23 +38,26 @@ namespace StateMechanism
 		bool IsSeparator(char);
 		bool IsOperator(char);
 		bool IsWhitespaceOrSeparatorOrOperator(char);
-		std::string GetNext();
+		char GetNext();
+		void PushPreParse(char);
 		std::list<std::string> GetNext(int);
-		std::list<std::string> PreParse;
 		std::string Token;
 		std::map<TokenType, std::string> PostParse;
+	private:
+		std::list<char> PreParse;
 	};
 
 	Helper::Helper()
 	{
-		std::ifstream inputFile("Input.txt");
+		std::ifstream inputFile;
+		inputFile.open("Input.txt", std::ios::in);
 		if (inputFile.is_open)
 		{
-			std::string lineParse;
+			char charParse;
 			int count = 0;
-			while (std::getline(inputFile, lineParse))
+			while (inputFile.get(charParse))
 			{
-				PreParse.assign(count, lineParse);
+				PreParse.assign(count, charParse);
 				++count;
 			}
 			inputFile.close;
@@ -67,17 +70,19 @@ namespace StateMechanism
 
 	//
 	// Read from given file path or from default path and load into PreParse
+	// fills chars into PreParse
 	//
 	Helper::Helper(std::string input)
 	{
-		std::ifstream inputFile(input + ".txt");
+		std::ifstream inputFile;
+		inputFile.open(input + ".txt", std::ios::in);
 		if (inputFile.is_open)
 		{
-			std::string lineParse;
+			char charParse;
 			int count = 0;
-			while (std::getline(inputFile, lineParse))
+			while (inputFile.get(charParse))
 			{
-				PreParse.assign(count, lineParse);
+				PreParse.assign(count, charParse);
 				++count;
 			}
 			inputFile.close;
@@ -162,11 +167,11 @@ namespace StateMechanism
 	//
 	// Return next string from PreParse list
 	//
-	std::string Helper::GetNext()
+	char Helper::GetNext()
 	{
-		std::string returnString = PreParse.front;
+		char returnChar = PreParse.front;
 		PreParse.pop_front;
-		return returnString;
+		return returnChar;
 	}
 
 	// Untested
@@ -181,6 +186,10 @@ namespace StateMechanism
 			returnList.assign(PreParse.front);
 			PreParse.pop_front;
 		}
+	}
+
+	void Helper::PushPreParse(char input){
+		PreParse.push_front(input);
 	}
 
 	class StateMechanism
@@ -201,8 +210,14 @@ namespace StateMechanism
 		throw NotImplementedEx;
 	}
 
+	// Initial State
 	StateMechanism::StateMechanism(Helper helper)
 	{
-
+		std::string strBuilder;
+		char charBuilder;
+		while(!helper.IsWhitespaceOrSeparatorOrOperator((charBuilder=helper.GetNext())))
+		{
+			strBuilder+=charBuilder;
+		} 
 	}
 } // namespace StateMechanism
