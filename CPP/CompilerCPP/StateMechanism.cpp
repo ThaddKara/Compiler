@@ -47,10 +47,10 @@ class Helper
 	bool IsPreParseEmpty();
 	std::list<std::string> GetNext(int);
 	std::string Token;
-	std::map<TokenType, std::string> PostParse;
 
   private:
 	std::list<char> PreParse;
+	std::map<TokenType, std::string> PostParse;
 };
 
 Helper::Helper()
@@ -60,11 +60,9 @@ Helper::Helper()
 	if (inputFile.is_open)
 	{
 		char charParse;
-		int count = 0;
 		while (inputFile.get(charParse))
 		{
-			PreParse.assign(count, charParse);
-			++count;
+			PreParse.push_front(charParse);
 		}
 		inputFile.close;
 	}
@@ -85,11 +83,9 @@ Helper::Helper(std::string input)
 	if (inputFile.is_open)
 	{
 		char charParse;
-		int count = 0;
 		while (inputFile.get(charParse))
 		{
-			PreParse.assign(count, charParse);
-			++count;
+			PreParse.push_front(charParse);
 		}
 		inputFile.close;
 	}
@@ -152,10 +148,12 @@ bool Helper::IsOperator(char input)
 }
 
 // Untested
+// Also checks for floats
 bool Helper::IsNumber(std::string input)
 {
-	std::regex r("[0-9]+:[0-9]+");
-	if (std::regex_match(input, r))
+	std::regex regint("[0-9]+:[0-9]+");
+	std::regex regfloat("[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)");
+	if (std::regex_match(input, regint) || std::regex_match(input, regfloat))
 	{
 		return true;
 	}
@@ -280,15 +278,15 @@ void StateMechanism::StateIs(Helper helper)
 		}
 
 		// Test strBuilder
-		if (helper.IsKeyword(strBuilder))
+		if (!strBuilder.empty() && helper.IsKeyword(strBuilder))
 		{
 			StateIsKeyword(strBuilder);
 		}
-		else if (helper.IsNumber(strBuilder))
+		else if (!strBuilder.empty() && helper.IsNumber(strBuilder))
 		{
 			StateIsNumber(strBuilder);
 		}
-		else
+		else if (!strBuilder.empty())
 		{
 			StateIsIdentifier(strBuilder);
 		}
