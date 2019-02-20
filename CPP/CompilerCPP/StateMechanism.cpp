@@ -7,20 +7,43 @@
 
 namespace StateMechanism
 {
-enum TokenType
+enum class TokenType
 {
+	Initial,
 	Keyword,
 	Identifier,
 	Separator,
-	Operator
+	Operator,
+	Number,
+	WhiteSpace,
+	Comment
 };
 
-enum States
+enum class States
 {
-	Process,
-	FetchOperation,
-	Stop
+	StateIs,
+	StateIsKeyword,
+	StateIsIdentifier,
+	StateIsSeperator,
+	StateIsOperator,
+	StateIsNumber,
+	StateIsWhiteSpace,
+	StateIsComment
 };
+
+// 2D object of state transitions from IsState (the initial state)
+//
+// implementation -> compare tokentype to Transitions list and switch based
+// on Transitions.second
+std::list<std::pair<TokenType, States>> Transitions{
+	{Initial, StateIs},
+	{Keyword, StateIsKeyword},
+	{Indentifer, StateIsIdentifier},
+	{Separator, StateIsSeperator},
+	{Operator, StateIsOperator},
+	{Number, StateIsNumber},
+	{WhiteSpace, StateIsWhiteSpace},
+	{Comment, StateIsComment}};
 
 class NotImplementedException : public std::logic_error
 {
@@ -45,12 +68,14 @@ class Helper
 	void PushPreParse(char);
 	char PopPreParse();
 	bool IsPreParseEmpty();
+	std::pair<TokenType, std::string> PopPostParse();
+	void PushPostParse(TokenType, std::string);
 	std::list<std::string> GetNext(int);
 	std::string Token;
 
   private:
 	std::list<char> PreParse;
-	std::map<TokenType, std::string> PostParse;
+	std::list<std::pair<TokenType, std::string>> PostParse;
 };
 
 Helper::Helper()
@@ -236,6 +261,22 @@ bool Helper::IsPreParseEmpty()
 	}
 }
 
+std::pair<TokenType, std::string> Helper::PopPostParse()
+{
+	//std::list<std::pair<TokenType, std::string>>::iterator it = PostParse.begin();
+	std::pair<TokenType, std::string> pair = PostParse.front();
+	PostParse.pop_front();
+	return pair;
+}
+
+void Helper::PushPostParse(TokenType tokenType, std::string input)
+{
+	std::pair<TokenType, std::string> pair;
+	pair.first = tokenType;
+	pair.second = input;
+	PostParse.push_front(pair);
+}
+
 class StateMechanism
 {
 	StateMechanism();
@@ -248,7 +289,12 @@ class StateMechanism
 	void StateIsNumber(std::string);
 	void StateIsComment(char);
 	void StateIsWhiteSpace();
+	std::string GetCurrentState();
+	std::string GetCurrentToken();
+
+  private:
 	States CurrentState;
+	TokenType CurrentToken;
 };
 
 // Pre-Initial State
@@ -268,6 +314,7 @@ StateMechanism::StateMechanism(std::string fileName)
 // Initial State
 void StateMechanism::StateIs(Helper helper)
 {
+	CurrentState = States::StateIs;
 	while (!helper.IsPreParseEmpty())
 	{
 		char charBuilder;
@@ -313,36 +360,54 @@ void StateMechanism::StateIs(Helper helper)
 
 void StateMechanism::StateIsKeyword(std::string input)
 {
+	CurrentState = States::StateIsKeyword;
 	throw NotImplementedEx;
 }
 
 void StateMechanism::StateIsIdentifier(std::string input)
 {
+	CurrentState = States::StateIsIdentifier;
 	throw NotImplementedEx;
 }
 
 void StateMechanism::StateIsSeparator(char input)
 {
+	CurrentState = States::StateIsSeperator;
 	throw NotImplementedEx;
 }
 
 void StateMechanism::StateIsOperator(char input)
 {
+	CurrentState = States::StateIsOperator;
 	throw NotImplementedEx;
 }
 
 void StateMechanism::StateIsNumber(std::string input)
 {
+	CurrentState = States::StateIsNumber;
 	throw NotImplementedEx;
 }
 
 void StateMechanism::StateIsComment(char input)
 {
+	CurrentState = States::StateIsComment;
 	throw NotImplementedEx;
 }
 
 void StateMechanism::StateIsWhiteSpace()
 {
+	CurrentState = States::StateIsWhiteSpace;
 	throw NotImplementedEx;
+}
+
+std::string StateMechanism::GetCurrentState(){
+	if(CurrentState == States::StateIs){return "InitialState";}
+	else if (CurrentState == States::StateIsComment){return "CommentState";}
+	else if (CurrentState == States::StateIsIdentifier){return "IdentifierState";}
+	else if (CurrentState == States::StateIsKeyword){return "KeywordState";}
+	else if (CurrentState == States::StateIsNumber){return "NumberState";}
+	else if (CurrentState == States::StateIsOperator){return "OperatorState";}
+	else if (CurrentState == States::StateIsSeperator){return "SeparatorState";}
+	if (CurrentState == States::StateIsWhiteSpace){return "WhiteSpaceState";}
 }
 } // namespace StateMechanism
