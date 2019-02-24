@@ -132,9 +132,9 @@ namespace StateMechanism
 		}
 	}
 
-	bool Helper::IsIdentifier(std::string input)
+	/*bool Helper::IsIdentifier(std::string input)
 	{
-	}
+	}*/
 
 	bool Helper::IsSeparator(std::string input)
 	{
@@ -424,6 +424,6 @@ namespace StateMechanism
 		else if (CurrentState == States::StateIsNumber) { return "NumberState"; }
 		else if (CurrentState == States::StateIsOperator) { return "OperatorState"; }
 		else if (CurrentState == States::StateIsSeperator) { return "SeparatorState"; }
-		if (CurrentState == States::StateIsWhiteSpace) { return "WhiteSpaceState"; }
+		else if (CurrentState == States::StateIsWhiteSpace) { return "WhiteSpaceState"; }
 	}
 } // namespace StateMechanism
