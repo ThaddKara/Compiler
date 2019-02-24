@@ -38,20 +38,20 @@ namespace StateMechanism
 	// implementation -> compare tokentype to Transitions list and switch based
 	// on Transitions.first/Transitions.second
 	std::list<std::pair<TokenType, States>> Transitions{
-		{TokenType::Initial, StateIs},
-		{TokenType::Keyword, StateIsKeyword},
-		{TokenType::Identifier, StateIsIdentifier},
-		{TokenType::Separator, StateIsSeperator},
-		{TokenType::Operator, StateIsOperator},
-		{TokenType::Number, StateIsNumber},
-		{TokenType::WhiteSpace, StateIsWhiteSpace},
-		{TokenType::Comment, StateIsComment} };
+		{TokenType::Initial, States::StateIs},
+		{TokenType::Keyword, States::StateIsKeyword},
+		{TokenType::Identifier, States::StateIsIdentifier},
+		{TokenType::Separator, States::StateIsSeperator},
+		{TokenType::Operator, States::StateIsOperator},
+		{TokenType::Number, States::StateIsNumber},
+		{TokenType::WhiteSpace, States::StateIsWhiteSpace},
+		{TokenType::Comment, States::StateIsComment} };
 
-	class NotImplementedException : public std::logic_error
+	/*class NotImplementedException : public std::logic_error
 	{
 	public:
 		virtual char const *what() const { return "Function not yet implemented."; }
-	} NotImplementedEx;
+	} NotImplementedEx;*/
 
 	class Helper
 	{
@@ -84,18 +84,17 @@ namespace StateMechanism
 	{
 		std::ifstream inputFile;
 		inputFile.open("Input.txt", std::ios::in);
-		if (inputFile.is_open)
+		if (inputFile.is_open())
 		{
 			char charParse;
 			while (inputFile.get(charParse))
 			{
 				PreParse.push_front(charParse);
 			}
-			inputFile.close;
+			inputFile.close();
 		}
 		else
 		{
-			throw NotImplementedEx;
 		}
 	}
 
@@ -107,18 +106,17 @@ namespace StateMechanism
 	{
 		std::ifstream inputFile;
 		inputFile.open(input + ".txt", std::ios::in);
-		if (inputFile.is_open)
+		if (inputFile.is_open())
 		{
 			char charParse;
 			while (inputFile.get(charParse))
 			{
 				PreParse.push_front(charParse);
 			}
-			inputFile.close;
+			inputFile.close();
 		}
 		else
 		{
-			throw NotImplementedEx;
 		}
 	}
 
@@ -220,8 +218,8 @@ namespace StateMechanism
 	//
 	char Helper::GetNext()
 	{
-		char returnChar = PreParse.front;
-		PreParse.pop_front;
+		char returnChar = PreParse.front();
+		PreParse.pop_front();
 		return returnChar;
 	}
 
@@ -229,15 +227,15 @@ namespace StateMechanism
 	//
 	// Return list<string> with next multiple items in PreParse List
 	//
-	std::list<std::string> Helper::GetNext(int iterator)
+	/*std::list<std::string> Helper::GetNext(int iterator)
 	{
 		std::list<std::string> returnList;
 		for (int i = 0; i < iterator; i++)
 		{
-			returnList.assign(PreParse.front);
-			PreParse.pop_front;
+			returnList.assign(PreParse.front());
+			PreParse.pop_front();
 		}
-	}
+	}*/
 
 	void Helper::PushPreParse(char input)
 	{
@@ -246,8 +244,8 @@ namespace StateMechanism
 
 	char Helper::PopPreParse()
 	{
-		char returnChar = PreParse.front;
-		PreParse.pop_front;
+		char returnChar = PreParse.front();
+		PreParse.pop_front();
 		return returnChar;
 	}
 
@@ -319,7 +317,7 @@ namespace StateMechanism
 	void StateMechanism::StateTransition(Helper helper, TokenType tokenType, States states, std::string strBuilder, char charBuilder)
 	{
 		std::pair<TokenType, States> transition{ tokenType, states };
-		std::list<std::pair<TokenType, States>>::iterator it = Transitions.begin;
+		std::list<std::pair<TokenType, States>>::iterator it = Transitions.begin();
 	}
 
 	// Initial State
@@ -343,29 +341,35 @@ namespace StateMechanism
 			}
 			else if (!strBuilder.empty() && helper.IsNumber(strBuilder))
 			{
-				StateIsNumber(strBuilder);
+				CurrentToken = TokenType::Number;
+				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
 			}
 			else if (!strBuilder.empty())
 			{
-				StateIsIdentifier(strBuilder);
+				CurrentToken = TokenType::Separator;
+				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
 			}
 
 			// Test charBuilder
 			if (helper.IsSeparator(charBuilder))
 			{
-				StateIsSeparator(charBuilder);
+				CurrentToken = TokenType::Separator;
+				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
 			}
 			else if (helper.IsOperator(charBuilder))
 			{
-				StateIsOperator(charBuilder);
+				CurrentToken = TokenType::Operator;
+				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
 			}
 			else if (helper.IsComment(charBuilder))
 			{
-				StateIsComment(charBuilder);
+				CurrentToken = TokenType::Comment;
+				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
 			}
 			else
 			{
-				StateIsWhiteSpace();
+				CurrentToken = TokenType::WhiteSpace;
+				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
 			}
 		}
 	}
@@ -373,43 +377,43 @@ namespace StateMechanism
 	void StateMechanism::StateIsKeyword(std::string input)
 	{
 		CurrentState = States::StateIsKeyword;
-		throw NotImplementedEx;
+		//throw NotImplementedEx;
 	}
 
 	void StateMechanism::StateIsIdentifier(std::string input)
 	{
 		CurrentState = States::StateIsIdentifier;
-		throw NotImplementedEx;
+		//throw NotImplementedEx;
 	}
 
 	void StateMechanism::StateIsSeparator(char input)
 	{
 		CurrentState = States::StateIsSeperator;
-		throw NotImplementedEx;
+		//throw NotImplementedEx;
 	}
 
 	void StateMechanism::StateIsOperator(char input)
 	{
 		CurrentState = States::StateIsOperator;
-		throw NotImplementedEx;
+		//throw NotImplementedEx;
 	}
 
 	void StateMechanism::StateIsNumber(std::string input)
 	{
 		CurrentState = States::StateIsNumber;
-		throw NotImplementedEx;
+		//throw NotImplementedEx;
 	}
 
 	void StateMechanism::StateIsComment(char input)
 	{
 		CurrentState = States::StateIsComment;
-		throw NotImplementedEx;
+		//throw NotImplementedEx;
 	}
 
 	void StateMechanism::StateIsWhiteSpace()
 	{
 		CurrentState = States::StateIsWhiteSpace;
-		throw NotImplementedEx;
+		//throw NotImplementedEx;
 	}
 
 	std::string StateMechanism::GetCurrentState() {
