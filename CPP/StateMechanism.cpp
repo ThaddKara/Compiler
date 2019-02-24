@@ -38,14 +38,14 @@ namespace StateMechanism
 	// implementation -> compare tokentype to Transitions list and switch based
 	// on Transitions.first/Transitions.second
 	std::list<std::pair<TokenType, States>> Transitions{
-		{TokenType::Initial, StateIs},
-		{TokenType::Keyword, StateIsKeyword},
-		{TokenType::Identifier, StateIsIdentifier},
-		{TokenType::Separator, StateIsSeperator},
-		{TokenType::Operator, StateIsOperator},
-		{TokenType::Number, StateIsNumber},
-		{TokenType::WhiteSpace, StateIsWhiteSpace},
-		{TokenType::Comment, StateIsComment} };
+		{TokenType::Initial, States::StateIs},
+		{TokenType::Keyword, States::StateIsKeyword},
+		{TokenType::Identifier, States::StateIsIdentifier},
+		{TokenType::Separator, States::StateIsSeperator},
+		{TokenType::Operator, States::StateIsOperator},
+		{TokenType::Number, States::StateIsNumber},
+		{TokenType::WhiteSpace, States::StateIsWhiteSpace},
+		{TokenType::Comment, States::StateIsComment} };
 
 	class NotImplementedException : public std::logic_error
 	{
@@ -84,14 +84,14 @@ namespace StateMechanism
 	{
 		std::ifstream inputFile;
 		inputFile.open("Input.txt", std::ios::in);
-		if (inputFile.is_open)
+		if (inputFile.is_open())
 		{
 			char charParse;
 			while (inputFile.get(charParse))
 			{
 				PreParse.push_front(charParse);
 			}
-			inputFile.close;
+			inputFile.close();
 		}
 		else
 		{
@@ -107,14 +107,14 @@ namespace StateMechanism
 	{
 		std::ifstream inputFile;
 		inputFile.open(input + ".txt", std::ios::in);
-		if (inputFile.is_open)
+		if (inputFile.is_open())
 		{
 			char charParse;
 			while (inputFile.get(charParse))
 			{
 				PreParse.push_front(charParse);
 			}
-			inputFile.close;
+			inputFile.close();
 		}
 		else
 		{
@@ -220,8 +220,8 @@ namespace StateMechanism
 	//
 	char Helper::GetNext()
 	{
-		char returnChar = PreParse.front;
-		PreParse.pop_front;
+		char returnChar = PreParse.front();
+		PreParse.pop_front();
 		return returnChar;
 	}
 
@@ -234,8 +234,8 @@ namespace StateMechanism
 		std::list<std::string> returnList;
 		for (int i = 0; i < iterator; i++)
 		{
-			returnList.assign(PreParse.front);
-			PreParse.pop_front;
+			returnList.assign(PreParse.begin(), PreParse.end()); // JK: not 100% sure if this is how you wanted to use assign with PreParse
+			PreParse.pop_front();
 		}
 	}
 
@@ -246,8 +246,8 @@ namespace StateMechanism
 
 	char Helper::PopPreParse()
 	{
-		char returnChar = PreParse.front;
-		PreParse.pop_front;
+		char returnChar = PreParse.front();
+		PreParse.pop_front();
 		return returnChar;
 	}
 
@@ -319,7 +319,7 @@ namespace StateMechanism
 	void StateMechanism::StateTransition(Helper helper, TokenType tokenType, States states, std::string strBuilder, char charBuilder)
 	{
 		std::pair<TokenType, States> transition{ tokenType, states };
-		std::list<std::pair<TokenType, States>>::iterator it = Transitions.begin;
+		std::list<std::pair<TokenType, States>>::iterator it = Transitions.begin();
 	}
 
 	// Initial State
