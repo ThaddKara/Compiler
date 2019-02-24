@@ -232,7 +232,7 @@ namespace StateMechanism
 		std::list<std::string> returnList;
 		for (int i = 0; i < iterator; i++)
 		{
-			returnList.assign(PreParse.front());
+			returnList.assign(PreParse.begin(), PreParse.end()); // JK: not 100% sure if this is how you wanted to use assign with PreParse
 			PreParse.pop_front();
 		}
 	}*/
