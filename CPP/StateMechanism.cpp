@@ -18,7 +18,8 @@ namespace StateMechanism
 		Operator,
 		Number,
 		WhiteSpace,
-		Comment
+		Comment,
+		Unknown
 	};
 
 	enum class States
@@ -30,7 +31,8 @@ namespace StateMechanism
 		StateIsOperator,
 		StateIsNumber,
 		StateIsWhiteSpace,
-		StateIsComment
+		StateIsComment,
+		StateIsUnknown
 	};
 
 	// 2D object of state transitions from IsState (the initial state)
@@ -45,7 +47,8 @@ namespace StateMechanism
 		{TokenType::Operator, States::StateIsOperator},
 		{TokenType::Number, States::StateIsNumber},
 		{TokenType::WhiteSpace, States::StateIsWhiteSpace},
-		{TokenType::Comment, States::StateIsComment} };
+		{TokenType::Comment, States::StateIsComment},
+		{TokenType::Unknown, States::StateIsUnknown} };
 
 	/*class NotImplementedException : public std::logic_error
 	{
@@ -59,21 +62,24 @@ namespace StateMechanism
 		Helper();
 		Helper(std::string);
 		bool IsKeyword(std::string);
-		bool IsIdentifier(std::string);
+		//bool IsIdentifier(std::string);
 		bool IsSeparator(std::string);
 		bool IsSeparator(char);
 		bool IsOperator(char);
 		bool IsNumber(std::string);
 		bool IsComment(char);
 		bool IsWhitespaceOrSeparatorOrOperator(char);
+		bool IsWhiteSpace(char);
 		char GetNext();
 		void PushPreParse(char);
 		char PopPreParse();
 		bool IsPreParseEmpty();
 		std::pair<TokenType, std::string> PopPostParse();
 		void PushPostParse(TokenType, std::string);
-		std::list<std::string> GetNext(int);
-		std::string Token;
+		//std::list<std::string> GetNext(int);
+		void WritetoFile(std::string, TokenType);
+		void WriteToFile(char, TokenType);
+		std::string TokenReturn(TokenType);
 
 	private:
 		std::list<char> PreParse;
@@ -202,7 +208,19 @@ namespace StateMechanism
 
 	bool Helper::IsWhitespaceOrSeparatorOrOperator(char input)
 	{
-		if (input == ' ' || IsSeparator(input) || IsOperator(input))
+		if (IsWhiteSpace(input) || IsSeparator(input) || IsOperator(input))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool Helper::IsWhiteSpace(char input)
+	{
+		if (input == ' ')
 		{
 			return true;
 		}
@@ -277,19 +295,49 @@ namespace StateMechanism
 		PostParse.push_front(pair);
 	}
 
+	void Helper::WritetoFile(std::string tokenVal, TokenType tokenType)
+	{
+		std::ofstream writter;
+		writter.open("Output.txt", std::ios::app);
+		writter << tokenVal << "-----" << TokenReturn(tokenType) << std::endl;
+		writter.close();
+	}
+
+	void Helper::WriteToFile(char tokenVal, TokenType tokenType)
+	{
+		std::ofstream writter;
+		writter.open("Output.txt", std::ios::app);
+		writter << tokenVal << "-----" << TokenReturn(tokenType) << std::endl;
+		writter.close();
+	}
+
+	std::string Helper::TokenReturn(TokenType tokenType)
+	{
+		if (tokenType == TokenType::Keyword) { return "Keyword"; }
+		else if (tokenType == TokenType::Number) { return "Number"; }
+		else if (tokenType == TokenType::Identifier) { return "Identifier"; }
+		else if (tokenType == TokenType::Separator) { return "Separator"; }
+		else if (tokenType == TokenType::Operator) { return "Operator"; }
+		else if (tokenType == TokenType::Comment) { return "Comment"; }
+		else if (tokenType == TokenType::WhiteSpace) { return "WhiteSpace"; }
+		else if (tokenType == TokenType::Unknown) { return "Unknown"; }
+	}
+
 	class StateMechanism
 	{
 		StateMechanism();
 		StateMechanism(std::string);
 		void StateTransition(Helper, TokenType, States, std::string, char);
 		void StateIs(Helper);
-		void StateIsKeyword(std::string);
-		void StateIsIdentifier(std::string);
-		void StateIsSeparator(char);
-		void StateIsOperator(char);
-		void StateIsNumber(std::string);
-		void StateIsComment(char);
-		void StateIsWhiteSpace();
+		void StateIsKeyword(Helper, TokenType, std::string);
+		void StateIsIdentifier(Helper, TokenType, std::string);
+		void StateIsSeparator(Helper, TokenType, char);
+		void StateIsOperator(Helper, TokenType, char);
+		void StateIsNumber(Helper, TokenType, std::string);
+		void StateIsComment(Helper, TokenType, char);
+		void StateIsWhiteSpace(Helper, TokenType, char);
+		void StateIsUnknown(Helper, TokenType, char);
+		void End();
 		std::string GetCurrentState();
 		std::string GetCurrentToken();
 
@@ -313,11 +361,26 @@ namespace StateMechanism
 	}
 
 	// Iterate through Transitions to find next state
-	// 0 = initial, 1 = Keyword, 2 = Identifier, 3 = Separator, 4 = Operator, 5 = Number, 6 = Comment
 	void StateMechanism::StateTransition(Helper helper, TokenType tokenType, States states, std::string strBuilder, char charBuilder)
 	{
-		std::pair<TokenType, States> transition{ tokenType, states };
-		std::list<std::pair<TokenType, States>>::iterator it = Transitions.begin();
+		States toState;
+		for (std::list<std::pair<TokenType, States>>::iterator it = Transitions.begin(); it != Transitions.end(); ++it)
+		{
+			if ( it->first == tokenType )
+			{
+				toState = it->second;
+				break;
+			}
+		}
+
+		if (toState == States::StateIsKeyword) { StateIsKeyword(helper, tokenType, strBuilder); }
+		else if (toState == States::StateIsNumber) { StateIsNumber(helper, tokenType, strBuilder); }
+		else if (toState == States::StateIsIdentifier) { StateIsIdentifier(helper, tokenType, strBuilder); }
+		else if (toState == States::StateIsSeperator) { StateIsSeparator(helper, tokenType, charBuilder); }
+		else if (toState == States::StateIsOperator) { StateIsOperator(helper, tokenType, charBuilder); }
+		else if (toState == States::StateIsComment) { StateIsComment(helper, tokenType, charBuilder); }
+		else if (toState == States::StateIsWhiteSpace) { StateIsWhiteSpace(helper, tokenType, charBuilder); }
+		else if (toState == States::StateIsUnknown) { StateIsUnknown(helper, tokenType, charBuilder); }
 	}
 
 	// Initial State
@@ -346,7 +409,7 @@ namespace StateMechanism
 			}
 			else if (!strBuilder.empty())
 			{
-				CurrentToken = TokenType::Separator;
+				CurrentToken = TokenType::Identifier;
 				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
 			}
 
@@ -366,55 +429,78 @@ namespace StateMechanism
 				CurrentToken = TokenType::Comment;
 				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
 			}
-			else
+			else if (helper.IsWhiteSpace(charBuilder))
 			{
 				CurrentToken = TokenType::WhiteSpace;
 				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
 			}
+			else
+			{
+				CurrentToken = TokenType::Unknown;
+				StateTransition(helper, CurrentToken, CurrentState, strBuilder, charBuilder);
+			}
 		}
+
+		End();
 	}
 
-	void StateMechanism::StateIsKeyword(std::string input)
+	void StateMechanism::StateIsKeyword(Helper helper, TokenType tokenType, std::string input)
 	{
 		CurrentState = States::StateIsKeyword;
-		//throw NotImplementedEx;
+		helper.WritetoFile(input, tokenType);
+		StateIs(helper);
 	}
 
-	void StateMechanism::StateIsIdentifier(std::string input)
+	void StateMechanism::StateIsIdentifier(Helper helper, TokenType tokenType, std::string input)
 	{
 		CurrentState = States::StateIsIdentifier;
-		//throw NotImplementedEx;
+		helper.WritetoFile(input, tokenType);
+		StateIs(helper);
 	}
 
-	void StateMechanism::StateIsSeparator(char input)
-	{
-		CurrentState = States::StateIsSeperator;
-		//throw NotImplementedEx;
-	}
-
-	void StateMechanism::StateIsOperator(char input)
-	{
-		CurrentState = States::StateIsOperator;
-		//throw NotImplementedEx;
-	}
-
-	void StateMechanism::StateIsNumber(std::string input)
+	void StateMechanism::StateIsNumber(Helper helper, TokenType tokenType, std::string input)
 	{
 		CurrentState = States::StateIsNumber;
-		//throw NotImplementedEx;
+		helper.WritetoFile(input, tokenType);
+		StateIs(helper);
 	}
 
-	void StateMechanism::StateIsComment(char input)
+	void StateMechanism::StateIsSeparator(Helper helper, TokenType tokenType, char input)
+	{
+		CurrentState = States::StateIsSeperator;
+		helper.WriteToFile(input, tokenType);
+		StateIs(helper);
+	}
+
+	void StateMechanism::StateIsOperator(Helper helper, TokenType tokenType, char input)
+	{
+		CurrentState = States::StateIsOperator;
+		helper.WriteToFile(input, tokenType);
+		StateIs(helper);
+	}
+
+	void StateMechanism::StateIsComment(Helper helper, TokenType tokenType, char input)
 	{
 		CurrentState = States::StateIsComment;
-		//throw NotImplementedEx;
+		helper.WriteToFile(input, tokenType);
+		StateIs(helper);
 	}
 
-	void StateMechanism::StateIsWhiteSpace()
+	void StateMechanism::StateIsWhiteSpace(Helper helper, TokenType tokenType, char input)
 	{
 		CurrentState = States::StateIsWhiteSpace;
-		//throw NotImplementedEx;
+		helper.WriteToFile(input, tokenType);
+		StateIs(helper);
 	}
+
+	void StateMechanism::StateIsUnknown(Helper helper, TokenType tokenType, char input)
+	{
+		CurrentState = States::StateIsUnknown;
+		helper.WriteToFile(input, tokenType);
+		StateIs(helper);
+	}
+
+	void StateMechanism::End() {}
 
 	std::string StateMechanism::GetCurrentState() {
 		if (CurrentState == States::StateIs) { return "InitialState"; }
@@ -425,5 +511,6 @@ namespace StateMechanism
 		else if (CurrentState == States::StateIsOperator) { return "OperatorState"; }
 		else if (CurrentState == States::StateIsSeperator) { return "SeparatorState"; }
 		else if (CurrentState == States::StateIsWhiteSpace) { return "WhiteSpaceState"; }
+		else if (CurrentState == States::StateIsUnknown) { return "UnknownState"; }
 	}
 } // namespace StateMechanism
