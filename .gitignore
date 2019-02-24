@@ -1,0 +1,7 @@
+*.ipch
+*.suo
+*.db
+*.sqlite
+*.vcxproj
+*.filerts
+*.opendb
