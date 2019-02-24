@@ -1,0 +1,37 @@
+}-----Separator
+
+-----Identifier
+$2mun-----Identifier
+=-----Operator
+ -----WhiteSpace
+egral	
+-----Identifier
+
+esle
+-----Identifier
+
+-----Identifier
+$1mun-----Identifier
+=-----Operator
+ -----WhiteSpace
+egral	
+-----Identifier
+
+-----Identifier
+2mun-----Identifier
+>-----Operator
+ -----WhiteSpace
+1mun-----Identifier
+fi
+$egral-----Identifier
+,-----Separator
+2mun-----Identifier
+,-----Separator
+1mun-----Identifier
+tni
+!srebmun-----Identifier
+owt-----Identifier
+neewteb-----Identifier
+eulav-----Identifier
+tsegral-----Identifier
+dniF-----Identifier

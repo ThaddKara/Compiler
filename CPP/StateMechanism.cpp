@@ -6,9 +6,10 @@
 #include <regex>
 #include <algorithm>
 #include <iterator>
+#include "StateMechanism.h"
 
-namespace StateMechanism
-{
+/*namespace DFSM
+/*{
 	enum class TokenType
 	{
 		Initial,
@@ -33,7 +34,7 @@ namespace StateMechanism
 		StateIsWhiteSpace,
 		StateIsComment,
 		StateIsUnknown
-	};
+	};*/
 
 	// 2D object of state transitions from IsState (the initial state)
 	//
@@ -56,7 +57,7 @@ namespace StateMechanism
 		virtual char const *what() const { return "Function not yet implemented."; }
 	} NotImplementedEx;*/
 
-	class Helper
+	/*class Helper
 	{
 	public:
 		Helper();
@@ -84,7 +85,7 @@ namespace StateMechanism
 	private:
 		std::list<char> PreParse;
 		std::list<std::pair<TokenType, std::string>> PostParse;
-	};
+	};*/
 
 	Helper::Helper()
 	{
@@ -95,12 +96,14 @@ namespace StateMechanism
 			char charParse;
 			while (inputFile.get(charParse))
 			{
+				std::cout << charParse << std::endl;
 				PreParse.push_front(charParse);
 			}
 			inputFile.close();
 		}
 		else
 		{
+			std::cout << "fail" << std::endl;
 		}
 	}
 
@@ -117,6 +120,7 @@ namespace StateMechanism
 			char charParse;
 			while (inputFile.get(charParse))
 			{
+				std::cout << charParse << std::endl;
 				PreParse.push_front(charParse);
 			}
 			inputFile.close();
@@ -320,10 +324,10 @@ namespace StateMechanism
 		else if (tokenType == TokenType::Operator) { return "Operator"; }
 		else if (tokenType == TokenType::Comment) { return "Comment"; }
 		else if (tokenType == TokenType::WhiteSpace) { return "WhiteSpace"; }
-		else if (tokenType == TokenType::Unknown) { return "Unknown"; }
+		else { return "Unknown"; }
 	}
 
-	class StateMechanism
+	/*class StateMechanism
 	{
 		StateMechanism();
 		StateMechanism(std::string);
@@ -339,16 +343,17 @@ namespace StateMechanism
 		void StateIsUnknown(Helper, TokenType, char);
 		void End();
 		std::string GetCurrentState();
-		std::string GetCurrentToken();
+		//std::string GetCurrentToken();
 
 	private:
 		States CurrentState;
 		TokenType CurrentToken;
-	};
+	};*/
 
 	// Pre-Initial State
 	StateMechanism::StateMechanism()
 	{
+		std::cout << "fail" << std::endl;
 		Helper helper;
 		StateIs(helper);
 	}
@@ -511,6 +516,6 @@ namespace StateMechanism
 		else if (CurrentState == States::StateIsOperator) { return "OperatorState"; }
 		else if (CurrentState == States::StateIsSeperator) { return "SeparatorState"; }
 		else if (CurrentState == States::StateIsWhiteSpace) { return "WhiteSpaceState"; }
-		else if (CurrentState == States::StateIsUnknown) { return "UnknownState"; }
+		else { return "UnknownState"; }
 	}
-} // namespace StateMechanism
+// namespace StateMechanism
